@@ -1,0 +1,15 @@
+torch
+transformers
+datasets
+accelerate
+trl
+peft
+bitsandbytes
+vllm
+pandas
+numpy
+tqdm
+pyyaml
+orjson
+jsonlines
+huggingface_hub
