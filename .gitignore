@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+.env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data
+data/raw/
+data/processed/
+data/intents/
+data/scored/
+data/final/
+
+# HuggingFace
+hf_cache/
+
+# Logs
+*.log
+
+# VSCode
+.vscode/
+
+# Slurm
+slurm-*.out
+
+# Model checkpoints
+checkpoints/
+outputs/
+
+# OS
+.DS_Store
