@@ -11,7 +11,7 @@ from transformers import (
 from trl import SFTTrainer
 
 
-MODEL_NAME = "Qwen/Qwen2.5-4B-Instruct"
+MODEL_NAME = "Qwen/Qwen3.5-4B-Instruct"
 DATA_PATH = "data/sft"
 OUTPUT_DIR = "models/qwen_schema_sft"
 
