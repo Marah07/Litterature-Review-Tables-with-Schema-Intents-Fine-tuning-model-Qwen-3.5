@@ -9,11 +9,11 @@ from prompts import S2_SYSTEM_PROMPT, GENERATE_SYNTHETIC_GOALS_PAPERS_QUESTION
 INPUT_PATH = "data/processed/prepared_dataset.jsonl"
 OUTPUT_PATH = "data/intents/candidate_intents.jsonl"
 
-MODEL_NAME = "Qwen/Qwen2.5-32B-Instruct"
+MODEL_NAME = "Qwen/Qwen3.6-35B-A3B"
 
 TEMPERATURE = 0.7
 TOP_P = 0.9
-MAX_TOKENS = 512
+MAX_TOKENS = 3000
 NUM_CANDIDATES = 5
 
 
@@ -53,6 +53,10 @@ def main():
     )
 
     examples = load_examples(INPUT_PATH)
+
+    # temporary debug subset
+    examples = examples[:3]
+
 
     prompts = []
 
