@@ -2,7 +2,14 @@ import json
 import os
 from tqdm import tqdm
 
-INPUT_PATH = "data/raw/tables_medium_quality.jsonl"
+from datasets import load_dataset
+
+
+dataset = load_dataset(
+    "blnewman/arxivDIGESTables",
+    "medium_quality"
+)["validation"]
+
 OUTPUT_PATH = "data/processed/prepared_dataset.jsonl"
 
 
@@ -41,9 +48,10 @@ def build_paper_text(row_bib_map):
 def main():
     os.makedirs("data/processed", exist_ok=True)
 
-    with open(INPUT_PATH, "r") as f, open(OUTPUT_PATH, "w") as out:
-        for line in tqdm(f):
-            ex = json.loads(line)
+# 2. Open the output file and process the dataset rows
+    print(f"Processing and saving to {OUTPUT_PATH}...")
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as out:
+        for ex in tqdm(dataset, desc="Processing rows"):
 
             tabid = ex.get("tabid")
             arxiv_id = ex.get("arxiv_id")
@@ -56,6 +64,8 @@ def main():
                 continue
 
             out_obj = {
+                "tabid" : tabid,
+                "arxiv_id":arxiv_id,
                 "table_text": table_text,
                 "paper_text": paper_text,
             }
