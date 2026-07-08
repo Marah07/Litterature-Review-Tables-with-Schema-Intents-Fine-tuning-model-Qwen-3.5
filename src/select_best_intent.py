@@ -52,23 +52,23 @@ def normalize_text(text):
 
 
 def find_best_goal(best_goal, candidate_goals):
-
     if not isinstance(best_goal, str):
         return candidate_goals[0]
-
+    
     normalized_best = normalize_text(best_goal)
-
+    
+    # none fallback — check first before any matching
+    if normalized_best == "none":
+        return candidate_goals[0]
+    
     # exact/partial text matching
     for candidate in candidate_goals:
-
         normalized_candidate = normalize_text(candidate)
-
         if normalized_best in normalized_candidate:
             return candidate
-
         if normalized_candidate in normalized_best:
             return candidate
-
+    
     # candidate reference matching
     candidate_patterns = {
         "candidate 1": 0,
@@ -77,18 +77,13 @@ def find_best_goal(best_goal, candidate_goals):
         "candidate 4": 3,
         "candidate 5": 4,
     }
-
     for pattern, idx in candidate_patterns.items():
-
-        if pattern in normalized_best:
+        if pattern in normalized_best and idx < len(candidate_goals):
             return candidate_goals[idx]
-
-    # None fallback
-    if normalized_best == "none":
-        return candidate_goals[0]
-
-    return best_goal
-
+    
+    # final fallback
+    print(f"[WARN] Could not match best_goal to any candidate, falling back to candidate 1. best_goal was: {normalized_best[:100]}")
+    return candidate_goals[0]
 
 def main():
 
@@ -152,6 +147,10 @@ def main():
     print(f"Total examples: {total}")
     print(f"Successfully parsed: {parsed}")
     print(f"Failed parsing: {failed}")
+    if total > 0:
+        fail_rate = failed / total * 100
+        if fail_rate > 10:
+            print(f"[WARN] High parse failure rate: {fail_rate:.1f}% — check judge output format")
 
 
 if __name__ == "__main__":

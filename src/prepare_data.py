@@ -7,7 +7,12 @@ from datasets import load_dataset
 
 dataset = load_dataset(
     "blnewman/arxivDIGESTables",
+<<<<<<< Updated upstream
     "medium_quality"
+=======
+    "medium_quality",
+    cache_dir="/lustre/fswork/projects/rech/ruk/uab84ny/hf_cache"
+>>>>>>> Stashed changes
 )["validation"]
 
 OUTPUT_PATH = "data/processed/prepared_dataset.jsonl"

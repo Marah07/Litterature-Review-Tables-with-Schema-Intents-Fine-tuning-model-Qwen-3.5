@@ -7,7 +7,7 @@ from prompts import S2_SYSTEM_PROMPT, GENERATE_SYNTHETIC_GOALS_PAPERS_QUESTION
 
 
 INPUT_PATH = "data/processed/prepared_dataset.jsonl"
-OUTPUT_PATH = "data/intents/candidate_intents_run_full_a100_part_3and4.jsonl"
+OUTPUT_PATH = "data/intents/candidate_intents_first_batch_h100.jsonl"
 
 MODEL_NAME = "/lustre/fswork/projects/rech/ruk/uab84ny/hf_cache/models--Qwen--Qwen3.6-35B-A3B/snapshots/995ad96eacd98c81ed38be0c5b274b04031597b0"
 
@@ -15,7 +15,6 @@ TEMPERATURE = 0.7
 TOP_P = 0.9
 MAX_TOKENS = 3000
 NUM_CANDIDATES = 5
-
 
 def build_prompt(example):
     return GENERATE_SYNTHETIC_GOALS_PAPERS_QUESTION.format(
@@ -38,12 +37,16 @@ def main():
     print("Loading model...")
     llm = LLM(
         model=MODEL_NAME,
-        tensor_parallel_size=4,
+        tensor_parallel_size=2,
         dtype="bfloat16",
         trust_remote_code=True,
         max_model_len=24576,
         enforce_eager=True,  # keep this to avoid cuda graph cache issues
-        gpu_memory_utilization=0.80,
+        gpu_memory_utilization=0.90,
+	max_num_seqs=2,
+        max_num_batched_tokens=24576,
+        gdn_prefill_backend="triton",
+        limit_mm_per_prompt={"image": 0, "video": 0, "audio": 0},  # disable MM 
           )
 
     sampling_params = SamplingParams(
@@ -57,18 +60,17 @@ def main():
     examples = load_examples(INPUT_PATH)
 
     # temporary debug subset
-    #examples = examples[:100]
+    examples = examples[:100]
 
     print(f"Loaded {len(examples)} examples")
     print(f"Writing results to: {OUTPUT_PATH}")
     print("Building prompts...")
 
     BATCH_SIZE = 100
-    RESUME_FROM = 18700
     tokenizer = llm.get_tokenizer()
     with open(OUTPUT_PATH, "a") as out:
 
-        for start in range(RESUME_FROM, len(examples), BATCH_SIZE):
+        for start in range(0, len(examples), BATCH_SIZE):
 
             batch = examples[start:start+BATCH_SIZE]
 

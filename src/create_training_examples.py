@@ -1,35 +1,23 @@
 import os
 import json
 from tqdm import tqdm
+from prompts import S2_SYSTEM_PROMPT
 
 INPUT_PATH = "data/final/final_intents.jsonl"
 OUTPUT_PATH = "data/training/schema_generation_examples.jsonl"
 
 
-SYSTEM_PROMPT = """
-You are an intelligent and precise assistant that can understand the contents of research papers.
-You are knowledgeable on different scientific domains.
-Your task is to generate literature review table schemas.
-""".strip()
-
-
 def extract_schema(table_text):
-
-    try:
-        table_json = json.loads(table_text)
-
-        columns = list(table_json.keys())
-
-        return {
-            "columns": columns
-        }
-
-    except Exception:
-
-        return {
-            "columns": []
-        }
-
+    columns = []
+    seen = set()
+    for line in table_text.strip().split("\n"):
+        parts = line.split("|")
+        if len(parts) >= 1:
+            col = parts[0].strip()
+            if col and col not in seen:
+                columns.append(col)
+                seen.add(col)
+    return {"columns": columns}
 
 def build_input_text(intent, paper_text):
 
@@ -63,7 +51,7 @@ def main():
             result = {
                 "tabid": item["tabid"],
                 "arxiv_id": item["arxiv_id"],
-                "system_prompt": SYSTEM_PROMPT,
+                "system_prompt": S2_SYSTEM_PROMPT,
                 "input": input_text,
                 "output": json.dumps(schema)
             }

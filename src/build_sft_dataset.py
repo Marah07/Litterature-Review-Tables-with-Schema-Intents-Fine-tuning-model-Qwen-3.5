@@ -75,6 +75,12 @@ def main():
     })
 
     dataset_dict.save_to_disk(OUTPUT_DIR)
+    with open(os.path.join(OUTPUT_DIR, "train.jsonl"), "w") as f:
+        for ex in train_examples:
+            f.write(json.dumps(ex) + "\n")
+    with open(os.path.join(OUTPUT_DIR, "val.jsonl"), "w") as f:
+        for ex in val_examples:
+            f.write(json.dumps(ex) + "\n")
 
     print("\nDataset created successfully.")
     print(dataset_dict)

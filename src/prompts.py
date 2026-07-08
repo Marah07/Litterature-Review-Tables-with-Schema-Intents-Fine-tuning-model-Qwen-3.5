@@ -22,7 +22,7 @@ We also provide information about the papers being discussed in the table. You w
 Return output in the following JSON format: {{'goal':<your goal>, 'justification':<justification of the goal>}}
 '''.strip()
 
-EEVALUATE_GOALS_TO_TABLE = '''
+EVALUATE_GOALS_TO_TABLE = '''
 Imagine you are a co-author of a scientific paper and the first author has created a table comparing different papers/methods. You are reading the table along with the caption of the paper and references to the table in the text of the paper. You are trying to guess what is the intent with which your co-author created this particular table. \
 Given a set of candidate intents that you think they might have had, your task is to select the best user intent out of them. Assign a score to each candidate on a scale of 1 to 5 on how well it fits what they might have thought. Prioritize selecting a user intent that is highly specific to the particular information in the table. The output format is a JSON with a string valued justification containing the scores assigned to each candidate schema along with why that score was assigned. You should also provide your final choice of the best schema. If you feel that none of them are good, then reply with None here. \
 [Table] {table} \
